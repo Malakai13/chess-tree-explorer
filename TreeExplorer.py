@@ -1,4 +1,5 @@
 import chess.pgn
+import curses
 import sys
 from chess import Board
 
@@ -77,55 +78,56 @@ def main():
 	keep_playing = True
 
 	while keep_playing:
-		print(board)
+		screen = curses.initscr()
 
+		screen.clear()
+		screen.addstr(0, 0, "Board:")
+
+		j = 2
+		for row in str(board).splitlines():
+			screen.addstr(j, 4, row)
+			j += 1
+
+		# TODO: have a way to enter your own moves?
+
+		# Build choices here
 		fen = board.fen()
 		if fen in fen_map:
 			top_i_choices = fen_map[fen]
 		else:
 			top_i_choices = []
 
-		choices = "back: back 1 move\nq: quit\n"
+		spacer = 2
+		screen.addstr(j + spacer, 0, "Choices:")
+		spacer += 2
 
 		i = 0
 		for move_count in top_i_choices:
-			choices += str(i) + ": " + str(move_count) + "\n"
+			screen.addstr(i + j + spacer, 4, str(i) + "- " + str(move_count))
 			i += 1
 
-		print("\n" + choices + "\n")
+		spacer += 1
+		screen.addstr(i + j + spacer, 4, "b - Back 1 move")
+		spacer += 1
+		screen.addstr(i + j + spacer, 4, "q - Quit")
+		screen.refresh()
 
-		choice = None
-		while choice is None:
-			x = raw_input("What is your choice?")
-			if x == "back" or x == "q":
-				choice = x
-				continue
-			else:
-				try:
-					choice = int(x)
-					if choice >= len(top_i_choices) or choice < 0:
-						choice = None
-						print("That is not a valid choice")
-				except:
-					print("That is not a valid choice")
+		x = chr(screen.getch())
 
-		if choice == "back":
+		if x == 'q':
+			keep_playing = False
+		elif x == 'b':
 			if len(board.stack) > 0:
 				board.pop()
 			else:
 				print("Unable to go back, no moves have been made")
-			continue
+		else:
+			move_count = top_i_choices[int(x)]
+			move = move_count.move
+			board.push(move)
 
-		if choice == "q":
-			sys.exit()
-
-		# TODO: have a way to enter your own moves?
-
-		move_count = top_i_choices[choice]
-		move = move_count.move
-		board.push(move)
+	curses.endwin()
 
 
 if __name__ == '__main__':
 	main()
-

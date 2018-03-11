@@ -32,6 +32,9 @@ class MoveCount:
 	def win_str(self):
 		total = self.white_wins + self.black_wins
 
+		if total == 0:
+			return "N/A"
+
 		white_win_percentage = 100.0 * self.white_wins / total
 		black_win_percentage = 100.0 * self.black_wins / total
 		return "{0:.2f}".format(white_win_percentage) + "|" + "{0:.2f}".format(black_win_percentage)
