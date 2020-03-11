@@ -26,7 +26,7 @@ def main():
 
 	fen_map = parser.transform_to_top_i_map(3)
 	explorer.main_loop(Board(), fen_map)
-	exit()
+	sys.exit()
 
 
 if __name__ == '__main__':
