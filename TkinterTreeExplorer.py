@@ -1,5 +1,5 @@
-from Tkinter import Tk
-from tkFileDialog import askopenfilename
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 
 import TreeExplorer
 from interface import implements

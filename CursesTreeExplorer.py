@@ -19,11 +19,11 @@ class CursesTreeExplorer(implements(TreeExplorer)):
 			screen = curses.initscr()
 
 			screen.clear()
-			screen.addstr(0, 0, "Board:")
+			screen.addstr("Board:\n")
 
 			j = 2
 			for row in str(board).splitlines():
-				screen.addstr(j, 4, row)
+				screen.addstr(row + "\n")
 				j += 1
 
 			# TODO: have a way to enter your own moves?
@@ -35,19 +35,20 @@ class CursesTreeExplorer(implements(TreeExplorer)):
 			else:
 				top_i_choices = []
 
-			spacer = 2
-			screen.addstr(j + spacer, 0, "Choices:")
-			spacer += 2
+			screen.addstr("Choices:\n")
 
 			i = 0
 			for move_count in top_i_choices:
-				screen.addstr(i + j + spacer, 4, str(i) + "- " + str(move_count))
+				screen.addstr(str(i) + " - " + str(move_count) + "\n")
 				i += 1
 
-			spacer += 1
-			screen.addstr(i + j + spacer, 4, "b - Back 1 move")
-			spacer += 1
-			screen.addstr(i + j + spacer, 4, "q - Quit")
+			try:
+				board.peek()
+				screen.addstr("b - Back 1 move\n")
+			except IndexError:
+				pass
+
+			screen.addstr("q - Quit\n")
 			screen.refresh()
 
 			x = chr(screen.getch())
@@ -55,13 +56,19 @@ class CursesTreeExplorer(implements(TreeExplorer)):
 			if x == 'q':
 				keep_playing = False
 			elif x == 'b':
-				if len(board.stack) > 0:
+				try:
 					board.pop()
-				else:
+				except IndexError:
 					print("Unable to go back, no moves have been made")
 			else:
-				move_count = top_i_choices[int(x)]
-				move = move_count.move
-				board.push(move)
+				try:
+					selected = int(x)
+					if selected >= len(top_i_choices):
+						continue
+					move_count = top_i_choices[selected]
+					move = move_count.move
+					board.push(move)
+				except ValueError:
+					pass
 
 		curses.endwin()

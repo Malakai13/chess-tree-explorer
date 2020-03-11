@@ -1,33 +1,33 @@
+from chess.pgn import BaseVisitor
+
 from MoveCount import MoveCount
 
 
-class ChessGameParser:
+class ChessGameParser(BaseVisitor):
 
 	def __init__(self):
 		self.fen_to_move_counts = {}
+		self.game_result = None
 
-	def parse_game(self, game):
-		board = game.board()
+	def visit_move(self, board, move) -> None:
+		self.handle_move(board, move)
 
-		for move in game.main_line():
-			fen = board.fen()
-			game_result = game.headers["Result"]
+	def handle_move(self, board, move):
+		fen = board.fen()
 
-			if fen in self.fen_to_move_counts:
-				move_count_map = self.fen_to_move_counts[fen]
-				if move in move_count_map:
-					move_count = move_count_map[move]
-					move_count.increment_count()
-					move_count.increment_by_game_results(game_result)
-				else:
-					move_count = MoveCount(move, game_result)
-					move_count_map[move] = move_count
+		if fen in self.fen_to_move_counts:
+			move_count_map = self.fen_to_move_counts[fen]
+			if move in move_count_map:
+				move_count = move_count_map[move]
+				move_count.increment_count()
+				move_count.increment_by_game_results(self.game_result)
 			else:
-				move_count = MoveCount(move, game_result)
-				move_count_map = {move: move_count}
-				self.fen_to_move_counts[fen] = move_count_map
-
-			board.push(move)
+				move_count = MoveCount(move, self.game_result)
+				move_count_map[move] = move_count
+		else:
+			move_count = MoveCount(move, self.game_result)
+			move_count_map = {move: move_count}
+			self.fen_to_move_counts[fen] = move_count_map
 
 	def transform_to_top_i_map(self, i):
 		results = {}

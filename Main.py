@@ -19,12 +19,14 @@ def main():
 	try:
 		while True:
 			game = chess.pgn.read_game(pgn)
-			parser.parse_game(game)
+			parser.game_result = game.headers["Result"]
+			game.accept(parser)
 	except:
 		pass
 
 	fen_map = parser.transform_to_top_i_map(3)
 	explorer.main_loop(Board(), fen_map)
+	exit()
 
 
 if __name__ == '__main__':
