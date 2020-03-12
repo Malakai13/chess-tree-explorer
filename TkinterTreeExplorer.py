@@ -1,11 +1,8 @@
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
-import TreeExplorer
-from interface import implements
 
-
-class TkinterTreeExplorer(implements(TreeExplorer)):
+class TkinterTreeExplorer:
 
 	@staticmethod
 	def no_game_given():

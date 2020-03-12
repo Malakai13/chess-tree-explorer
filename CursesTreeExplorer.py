@@ -1,10 +1,8 @@
-from TreeExplorer import TreeExplorer
-from interface import implements
 import curses
 import sys
 
 
-class CursesTreeExplorer(implements(TreeExplorer)):
+class CursesTreeExplorer:
 
 	@staticmethod
 	def no_game_given():

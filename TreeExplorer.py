@@ -1,7 +1,7 @@
-from interface import Interface
+# TODO: try to add back in interfaces?
 
 
-class TreeExplorer(Interface):
+class TreeExplorer:
 
 	# What to do when no game is given via the command line arguments
 	@staticmethod
